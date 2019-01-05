@@ -212,53 +212,40 @@ Page({
   switchAttrPop: function () {
     if (this.data.openAttr == false) {
       this.setData({
-        openAttr: !this.data.openAttr,
-        collectBackImage: "/static/images/detail_back.png"
+        openAttr: !this.data.openAttr
       });
     }
   },
-  closeAttrOrCollect: function () {
+  closeAttr: function () {
+    this.setData({
+      openAttr: false,
+    });
+  },
+  addCannelCollect: function () {
     let that = this;
-    if (this.data.openAttr) {
-      this.setData({
-        openAttr: false,
-      });
-      if (that.data.userHasCollect == 1) {
-        that.setData({
-          'collectBackImage': that.data.hasCollectImage
-        });
-      } else {
-        that.setData({
-          'collectBackImage': that.data.noCollectImage
-        });
-      }
-    } else {
-      //添加或是取消收藏
-      util.request(api.CollectAddOrDelete, { typeId: 0, valueId: this.data.id }, "POST")
-        .then(function (res) {
-          let _res = res;
-          if (_res.errno == 0) {
-            if ( _res.data.type == 'add') {
-              that.setData({
-                'collectBackImage': that.data.hasCollectImage
-              });
-            } else {
-              that.setData({
-                'collectBackImage': that.data.noCollectImage
-              });
-            }
-
+    //添加或是取消收藏
+    util.request(api.CollectAddOrDelete, { typeId: 0, valueId: this.data.id }, "POST")
+      .then(function (res) {
+        let _res = res;
+        if (_res.errno == 0) {
+          if (_res.data.type == 'add') {
+            that.setData({
+              'collectBackImage': that.data.hasCollectImage
+            });
           } else {
-            wx.showToast({
-              image: '/static/images/icon_error.png',
-              title: _res.errmsg,
-              mask: true
+            that.setData({
+              'collectBackImage': that.data.noCollectImage
             });
           }
 
-        });
-    }
-
+        } else {
+          wx.showToast({
+            image: '/static/images/icon_error.png',
+            title: _res.errmsg,
+            mask: true
+          });
+        }
+      });
   },
   openCartPage: function () {
     wx.switchTab({
@@ -267,16 +254,20 @@ Page({
   },
   addToCart: function () {
     var that = this;
-    if (this.data.openAttr == false) {
+    if (this.data.openAttr === false) {
       //打开规格选择窗口
       this.setData({
-        openAttr: !this.data.openAttr,
-        collectBackImage: "/static/images/detail_back.png"
+        openAttr: !this.data.openAttr
       });
     } else {
 
       //提示选择完整规格
       if (!this.isCheckedAllSpec()) {
+        wx.showToast({
+          image: '/static/images/icon_error.png',
+          title: '请选择规格',
+          mask: true
+        });
         return false;
       }
 
@@ -284,12 +275,22 @@ Page({
       let checkedProduct = this.getCheckedProductItem(this.getCheckedSpecKey());
       if (!checkedProduct || checkedProduct.length <= 0) {
         //找不到对应的product信息，提示没有库存
+        wx.showToast({
+          image: '/static/images/icon_error.png',
+          title: '库存不足',
+          mask: true
+        });
         return false;
       }
 
       //验证库存
       if (checkedProduct.goods_number < this.data.number) {
         //找不到对应的product信息，提示没有库存
+        wx.showToast({
+          image: '/static/images/icon_error.png',
+          title: '库存不足',
+          mask: true
+        });
         return false;
       }
 
@@ -305,15 +306,6 @@ Page({
               openAttr: !that.data.openAttr,
               cartGoodsCount: _res.data.cartTotal.goodsCount
             });
-            if (that.data.userHasCollect == 1) {
-              that.setData({
-                'collectBackImage': that.data.hasCollectImage
-              });
-            } else {
-              that.setData({
-                'collectBackImage': that.data.noCollectImage
-              });
-            }
           } else {
             wx.showToast({
               image: '/static/images/icon_error.png',

@@ -6,9 +6,10 @@
     "pages/hotGoods/hotGoods",
     "pages/ucenter/address/address",
     "pages/ucenter/addressAdd/addressAdd",
-    "pages/ucenter/orderDetail/orderDetail",
     "pages/ucenter/footprint/footprint",
     "pages/ucenter/order/order",
+    "pages/ucenter/orderDetail/orderDetail",
+    "pages/ucenter/express/express",
     "pages/ucenter/feedback/feedback",
     "pages/ucenter/coupon/coupon",
     "pages/ucenter/collect/collect",
@@ -38,7 +39,7 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "仿网易严选",
     "navigationBarTextStyle": "black",
-    "enablePullDownRefresh": "true"
+    "enablePullDownRefresh": true
   },
   "tabBar": {
     "backgroundColor": "#fafafa",
